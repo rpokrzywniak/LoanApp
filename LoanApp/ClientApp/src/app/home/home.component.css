@@ -1,0 +1,26 @@
+mat-slider {
+  width: 50%;
+}
+.mat-form-field {
+    margin-left:3%;
+}
+.loan-amount{
+    margin-bottom: 0;
+    margin-top: 3%;
+    color: aquamarine;
+}
+.loan-payback {
+  margin-bottom: 0;
+  color: aquamarine;
+}
+.input-value{
+    width: 232px;
+}
+@media (max-width: 555px){
+    mat-slider {
+        width: 100%;
+    }
+}
+.btn-primary {
+  background-color: #6bcfae;
+}
