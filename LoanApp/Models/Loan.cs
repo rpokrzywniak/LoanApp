@@ -9,5 +9,8 @@ namespace LoanApp.Models
     {
         public string Name { get; set; }
         public double InterestRate { get; set; }
+        public int Amount { get; set; }
+        public int Period { get; set; }
+        public AmortizationType AmortizationMethod { get; set; }
     }
 }

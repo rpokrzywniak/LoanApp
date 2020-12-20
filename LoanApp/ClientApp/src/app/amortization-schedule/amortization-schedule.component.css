@@ -1,0 +1,9 @@
+table {
+  width: 100%;
+}
+.fields {
+  margin-top:1%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}

@@ -1,9 +1,9 @@
-﻿using AutoMapper;
+﻿using LoanApp.Logic;
 using LoanApp.Models;
+using LoanApp.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using LoanApp.DTOs;
 
 namespace LoanApp.Controllers
 {
@@ -11,26 +11,35 @@ namespace LoanApp.Controllers
     [Route("[controller]")]
     public class LoanController : ControllerBase
     {
-        private readonly ILogger<LoanController> _logger;
-        private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
-
-        public LoanController(ILogger<LoanController> logger, IConfiguration configuration, IMapper mapper)
+        private readonly ILoanLogic _loanLogic;
+        public LoanController(ILoanLogic loanLogic)
         {
-            _logger = logger;
-            _configuration = configuration;
-            _mapper = mapper;
+            _loanLogic = loanLogic;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Loan>> GetLoanTypes()
         {
-            var loanTypes = _configuration.GetSection("Loan")?.GetChildren();
-            if(loanTypes == null)
+            return Ok(_loanLogic.GetLoanTypes());
+        }
+
+        [HttpGet("amortization")]
+        public ActionResult<IEnumerable<AmortizationMethodDTO>> GetAmortizationMethods()
+        {
+            return Ok(EnumHelper.EnumNameValues<AmortizationType>());
+        }
+
+        [HttpPost]
+        public ActionResult<AmortizationDTO> CalculateLoan(Loan loan)
+        {
+            var realLoan = _loanLogic.GetLoanType(loan.Name);
+            if (realLoan == null)
             {
                 return BadRequest();
             }
-            return Ok(_mapper.Map<IEnumerable<Loan>>(loanTypes));
+
+            loan.InterestRate = realLoan.InterestRate;
+            return Ok(_loanLogic.CalculateLoan(loan));
         }
     }
 }

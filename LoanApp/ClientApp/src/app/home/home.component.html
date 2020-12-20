@@ -1,42 +1,68 @@
 <mat-card>
-  <h1>Calculate your loan!</h1>
-  <p>Welcome to my app, please select type of loan you want to calculate</p>
-  <mat-form-field appearance="fill">
-    <mat-label>Loan type</mat-label>
-    <mat-select [(ngModel)]="selectedLoanType">
-      <mat-option *ngFor="let loanType of loanTypes" [value]="loanType">
-        {{loanType.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <div *ngIf="selectedLoanType">
-    <p>Your selected <em>loan type</em> is <strong>{{selectedLoanType.name}}</strong> and its <em>interest rate</em> is <strong>{{selectedLoanType.interestRate}}%</strong></p>
-    <p class="loan-amount">Loan amount</p>
-    <mat-slider thumbLabel
-                [(ngModel)]="amountValue"
-                [displayWith]="formatLabel"
-                tickInterval="1000"
-                min="1"
-                max="1000000"></mat-slider>
-    <mat-form-field appearance="fill" class="input-value">
-      <mat-label>Amount</mat-label>
-      <input matInput type="number" [(ngModel)]="amountValue" class="example-right-align">
-      <span matSuffix>$</span>
-    </mat-form-field>
-    <p class="loan-payback">Payback time</p>
-    <mat-slider thumbLabel
-                [(ngModel)]="paymackValue"
-                [displayWith]="formatLabel"
-                tickInterval="1000"
-                min="1"
-                max="360"></mat-slider>
-      <mat-form-field appearance="fill" class="input-value">
-        <mat-label>Payback time</mat-label>
-        <input matInput type="number" [(ngModel)]="paymackValue" class="example-right-align">
-        <span matSuffix>mth</span>
+  <mat-tab-group #tabGroup>
+    <mat-tab label="Calculator">
+      <h1>Calculate your loan!</h1>
+      <p>Welcome to my app, please select type of loan you want to calculate</p>
+      <mat-form-field appearance="fill" *ngIf="amortizationMethods">
+        <mat-label>Loan type</mat-label>
+        <mat-select [(ngModel)]="selectedLoanType" (selectionChange)="setDefaultAmortizationMethod()">
+          <mat-option *ngFor="let loanType of loanTypes" [value]="loanType">
+            {{loanType.name}}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
-      <div layout="column">
-        <button class="btn-primary" mat-raised-button>Calculate details</button>
+      <mat-form-field appearance="fill" *ngIf="selectedLoanType">
+        <mat-label>Amortization method</mat-label>
+        <mat-select [(ngModel)]="selectedLoanType.amortizationMethod" (selectionChange)="resetAmortization()">
+          <mat-option *ngFor="let amortizationMethod of amortizationMethods" [value]="amortizationMethod.value">
+            {{amortizationMethod.key}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div *ngIf="selectedLoanType">
+        <p class="loan-amount">Loan amount</p>
+        <mat-slider thumbLabel
+                    [(ngModel)]="selectedLoanType.amount"
+                    [displayWith]="formatLabel"
+                    tickInterval="1000"
+                    [min]="minAmount"
+                    [max]="maxAmount"></mat-slider>
+        <mat-form-field appearance="fill" class="input-value">
+          <mat-label>Amount</mat-label>
+          <input matInput type="number"
+                 [(ngModel)]="selectedLoanType.amount"
+                 [min]="minAmount"
+                 [max]="maxAmount"
+                 class="example-right-align"
+                 (change)="checkAmount()">
+          <span matSuffix>$</span>
+        </mat-form-field>
+        <p class="loan-payback">Payback time</p>
+        <mat-slider thumbLabel
+                    [(ngModel)]="selectedLoanType.period"
+                    [displayWith]="formatLabel"
+                    tickInterval="1000"
+                    [min]="minPeriod"
+                    [max]="maxPeriod"></mat-slider>
+        <mat-form-field appearance="fill" class="input-value">
+          <mat-label>Payback time</mat-label>
+          <input matInput type="number"
+                 [(ngModel)]="selectedLoanType.period"
+                 [min]="minPeriod"
+                 [max]="maxPeriod"
+                 class="example-right-align"
+                 (change)="checkPeriod()">
+          <span matSuffix>mth</span>
+        </mat-form-field>
+        <div layout="column">
+          <button class="btn-primary" mat-raised-button (click)="calculateLoan()">Calculate details</button>
+        </div>
       </div>
-  </div>
+    </mat-tab>
+    <ng-container *ngFor="let amortizationMethod of amortizationMethods">
+      <mat-tab [label]="amortizationMethod.key" [disabled]="!(selectedLoanType?.amortization && amortizationMethod.value === this.selectedLoanType.amortizationMethod)">
+        <app-amortization-schedule *ngIf="selectedLoanType?.amortization && amortizationMethod.value === this.selectedLoanType.amortizationMethod" [selectedLoanType]="selectedLoanType"></app-amortization-schedule>
+      </mat-tab>
+    </ng-container>
+  </mat-tab-group>
 </mat-card>

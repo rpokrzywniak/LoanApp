@@ -18,14 +18,18 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material';
+import { MatTabsModule } from '@angular/material/tabs';
+import { AmortizationScheduleComponent } from './amortization-schedule/amortization-schedule.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    NavBarComponent
+    NavBarComponent,
+    AmortizationScheduleComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -43,7 +47,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatSliderModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatTableModule,
+    MatPaginatorModule,
+    MatTabsModule
   ],
   providers: [ConfigurationService, LoanService],
   bootstrap: [AppComponent]

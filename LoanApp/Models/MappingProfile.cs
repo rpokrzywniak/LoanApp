@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LoanApp.DTOs;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,6 @@ namespace LoanApp.Models
     {
         public MappingProfile()
         {
-            // Add as many of these lines as you need to map your objects
             CreateMap<IConfigurationSection, Loan>()
                 .ForMember(dest =>
                     dest.Name,
@@ -19,6 +19,11 @@ namespace LoanApp.Models
                 .ForMember(dest =>
                     dest.InterestRate,
                     opt => opt.MapFrom(src => src.Value));
+
+            CreateMap<IEnumerable<Amortization>, AmortizationDTO>()
+                .ForMember(dest =>
+                     dest.AmortizationSchedule,
+                     opt => opt.MapFrom(src => src));
         }
     }
 }

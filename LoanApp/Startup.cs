@@ -1,4 +1,6 @@
 using AutoMapper;
+using LoanApp.Factory;
+using LoanApp.Logic;
 using LoanApp.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +30,9 @@ namespace LoanApp
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddScoped<ILoanLogic, LoanLogic>();
+            services.AddScoped<IAmortizationMethodFactory, AmortizationMethodFactory>();
 
             services.AddAutoMapper(typeof(Startup));
         }
